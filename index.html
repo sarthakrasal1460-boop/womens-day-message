@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Special Message For You From Your Dada</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -97,6 +102,11 @@
                 transform: translateY(100vh) rotate(720deg);
                 opacity: 0;
             }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         .confetti {
@@ -201,9 +211,9 @@
             transform: translateY(-1px);
         }
 
-        .btn-secondary {
-            background: linear-gradient(135deg, var(--gold) 0%, #e6c090 100%);
-            margin-top: 10px;
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .question {
@@ -308,16 +318,6 @@
             font-size: 1.1rem;
         }
 
-        .photo-upload-info {
-            background: rgba(212, 88, 127, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            color: var(--dark);
-            text-align: center;
-        }
-
         .message-text {
             font-family: 'Cormorant Garamond', serif;
             font-size: 1.3rem;
@@ -353,15 +353,99 @@
             margin-bottom: 20px;
         }
 
+        .chat-container {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .chat-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chat-message {
+            display: flex;
+            flex-direction: column;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .chat-message.brother {
+            align-items: flex-start;
+        }
+
+        .chat-message.sister {
+            align-items: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .chat-message.brother .message-bubble {
+            background: linear-gradient(135deg, rgba(212, 88, 127, 0.15) 0%, rgba(244, 165, 165, 0.15) 100%);
+            border-bottom-left-radius: 5px;
+            border: 1px solid rgba(212, 88, 127, 0.2);
+        }
+
+        .chat-message.sister .message-bubble {
+            background: linear-gradient(135deg, rgba(212, 165, 116, 0.15) 0%, rgba(255, 235, 200, 0.15) 100%);
+            border-bottom-right-radius: 5px;
+            border: 1px solid rgba(212, 165, 116, 0.2);
+        }
+
+        .message-sender-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            opacity: 0.7;
+        }
+
+        .chat-message.brother .message-sender-name {
+            color: var(--primary);
+        }
+
+        .chat-message.sister .message-sender-name {
+            color: var(--gold);
+        }
+
+        .message-text-content {
+            color: var(--dark);
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .message-timestamp {
+            font-size: 0.7rem;
+            color: rgba(0, 0, 0, 0.4);
+            margin-top: 5px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
         textarea {
-            width: 100%;
-            padding: 20px;
+            flex: 1;
+            padding: 15px 20px;
             border: 2px solid var(--accent);
             border-radius: 15px;
             font-family: 'Montserrat', sans-serif;
             font-size: 1rem;
             resize: vertical;
-            min-height: 120px;
+            min-height: 60px;
+            max-height: 150px;
             transition: all 0.3s ease;
             background: white;
         }
@@ -372,48 +456,60 @@
             box-shadow: 0 0 0 4px rgba(212, 88, 127, 0.1);
         }
 
+        .send-button {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 88, 127, 0.3);
+            white-space: nowrap;
+        }
+
+        .send-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 88, 127, 0.4);
+        }
+
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 10px 15px;
+            background: rgba(212, 88, 127, 0.1);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: var(--primary);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .typing-indicator.active {
+            display: block;
+        }
+
+        .new-message-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(212, 88, 127, 0.4);
+            animation: fadeInUp 0.5s ease-out;
+            z-index: 1000;
+        }
+
         .conversation {
             margin-top: 30px;
-        }
-
-        .message-item {
-            margin-bottom: 20px;
-            padding: 20px;
-            border-radius: 15px;
-            animation: fadeInUp 0.5s ease-out;
-        }
-
-        .message-item.from-you {
-            background: linear-gradient(135deg, rgba(212, 88, 127, 0.1) 0%, rgba(244, 165, 165, 0.1) 100%);
-            border-left: 4px solid var(--primary);
-        }
-
-        .message-item.from-sister {
-            background: linear-gradient(135deg, rgba(212, 165, 116, 0.1) 0%, rgba(255, 235, 200, 0.1) 100%);
-            border-left: 4px solid var(--gold);
-        }
-
-        .message-sender {
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-        }
-
-        .message-item.from-sister .message-sender {
-            color: var(--gold);
-        }
-
-        .message-content {
-            color: var(--dark);
-            line-height: 1.6;
-            white-space: pre-wrap;
-        }
-
-        .message-time {
-            font-size: 0.8rem;
-            color: rgba(0, 0, 0, 0.4);
-            margin-top: 8px;
         }
 
         .hidden {
@@ -575,22 +671,31 @@
             opacity: 0.7;
         }
 
-        .screenshot-mode {
+        .connection-status {
             position: fixed;
             top: 20px;
             left: 20px;
             background: rgba(45, 27, 46, 0.9);
             color: white;
-            padding: 10px 20px;
+            padding: 8px 15px;
             border-radius: 10px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .screenshot-mode.active {
-            opacity: 1;
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-dot.disconnected {
+            background: #f87171;
         }
 
         @media (max-width: 600px) {
@@ -621,9 +726,24 @@
                 width: 45px;
                 height: 45px;
             }
+
+            .message-bubble {
+                max-width: 85%;
+            }
+
+            .chat-container {
+                max-height: 400px;
+            }
+
+            .chat-input-container {
+                flex-direction: column;
+            }
+
+            .send-button {
+                width: 100%;
+            }
         }
 
-        /* Loading animation */
         .loading {
             text-align: center;
             padding: 20px;
@@ -646,7 +766,10 @@
     </style>
 </head>
 <body>
-    <div class="screenshot-mode" id="screenshotMode">📸 Screenshot Mode Active</div>
+    <div class="connection-status" id="connectionStatus">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">Connecting...</span>
+    </div>
     
     <div class="container">
         <div class="card">
@@ -682,16 +805,11 @@
                 
                 <div class="photo-frame">
                     <div id="photoContainer">
-                        <!-- Photo will be loaded here -->
                         <div class="photo-placeholder">
                             <p>📸 Your special photo will appear here<br><br>
-                            💝 Add your image URL in the code<br>
-                            or use base64 encoded image</p>
+                            💝 Add your image URL in the code</p>
                         </div>
                     </div>
-                </div>
-                <div class="photo-upload-info hidden" id="photoInfo">
-                    💡 To add your photo: Edit line 880 in the code and paste your image URL
                 </div>
 
                 <div class="decorative-dots">
@@ -708,11 +826,11 @@
                     Ratri me mobile open kela ani mala tuza insta open disla. me tujhe msg vachale nahi pn 2-3 baghitale. BTW i have right to watch/see your personal msgs.
                     jo mala doubt hota tech tu kel. mala ratripasun zop nahi. mala as Dada fail zalo as vattay. tu ky mhanali hote tu Ganesh shi bolat nahi. tyachi tuzya side tri ubha rahaychi layki ahe ka rao. mala nahi kalun ghyach ki tumch kontya type ch relation ahe. ani tumha locana relation/love vagere ky ast mahiti nhi. mala nahi kalat yaar tuz challay ky. ani tu multiple mullana msgs kartey tyacha ky. he tynla mahitey ka ki tu dusrynna pn msgs karte. ani ha chaitanya cha ky. tula hech jr karayche asel tr college gelyvr kr na. me support karel. pn atta nako he bai. khup avghad hoel tuza, maza ani familich. 
                     <br><br>
-                    He sagal karayla tu khup lahan ahe bala. you're just little kiddo. tu khup havet rahte tyachyamul sagal zalay he. tujhe swapna mothe ani ky kartey rao tu. tuza attitude jara kami kr. tuza nkki ky problem ahe to sang. jara simple vag. ani ha kokancha mulga kon ani tula ka msg kartoy ani tu ka reply detey. evdhi pn akkal nahi ka Unolkhichya mansabarobar bolaych ki nahi. tu yaar followers disle ki lagli responce dyayla. udya jr millions followers vala aalyvr ky karshil tu?. swata chya mehntivr motha ho yaar. short cut nako baghu. i was neglecting you I thought one day you will understand all. 
+                    He sagal karayla tu khup lahan ahe bala. you're just little kiddo. tu khup havet rahte tyachyamul sagal zalay he. tujhe swapna mothe ani ky kartey rao tu. tuza attitude jara kami kr. tuza nkki ky problem ahe to sang. jara simple vag. ani ha kokancha mulga kon ani tula ka msg kartoy ani tu ka reply detey. evdhi pn akkal nahi ka Unolkhichya mansabarobar bolaych ki nahi. tu yaar followers disle ki lagli responce dyayla. udya jr millions followers vala aalyvr ky karshil tu?. swata chya mehntivr mothat ho yaar. short cut nako baghu. i was neglecting you I thought one day you will understand all. 
                     <br><br>
                     Mala aaplya gharat ya goshti 3rd time repeat nahi karaychyay. tumhi yaar last 3 generation hech chalavlay gharat. thoda gharatle shwas jr ghet nahi tr kahitri kutane hotat. aata gharachnche limit samplay. tyanch vay zalay tyanna samajlyavr nahi sahan honar. 2-4 loka martil gharat tuzya ashya vedya vagnyamul. aadhich aaplya gharat mentally and finacially condition khup vait ahet aata. ani tuzya asha vagnyamul Mau vr effect padtoy. ti khup lahan ahe. mg tini pn hech karava ke repeat je tu kartey. 
                     <br><br>
-                    ha mazyasathi khup motha heartbreack ahe. mhanaje tumhi gharatil mulinni as tharavlaych ka gharachya lokkana jaguch dyayach nahi. ani mala tumchya doghinchya(Didi ani Tu) choice chi kiv yete. me aslya porranna ani porrnina gharatun latha marun baher kadhel jr asch jr chalu rahil.
+                    ha mazyasathi khup motha heartbreack ahe. mhanaje tumhi gharatil mulinni as tharavlaych ka gharachya lokkana jaguch dyayach nahi. ani mala tumchya doghinchya choice chi kiv yete. me aslya porranna ani porrnina gharatun latha marun baher kadhel jr asch jr chalu rahil.
                     <br><br>
                     Tu jya porrna msgs karte tynachi lyki pn nahi. me tynann ky mhanu shakat nahi karan aaplch manus nit nahi. tula tuza friend circle sodava lagel. tula idea nahit je lokanshi boltey te kon ahe. they will squize you until they will not finish with their purpose. tuzya female friends pn ky kami nahit. te tula cheer karat ahet asl karayla. tu yar hushar ahe dashing ahe. aslya ghoshti nako karu.
                     <br><br>
@@ -725,17 +843,32 @@
 
                 <div class="signature">- Tuza Dada 💕</div>
 
-                <!-- Reply Section -->
+                <!-- Chat Section (NEW!) -->
                 <div class="reply-section">
-                    <h2 class="reply-heading">Tula ky vattay te kalav mala?</h2>
-                    <textarea id="replyInput" placeholder="Write your message here..."></textarea>
-                    <button class="btn" onclick="sendReply()" style="margin-top: 15px;">Send Message</button>
+                    <h2 class="reply-heading">💬 Chat with Your Dada</h2>
+                    
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="loading" id="chatLoading">
+                                <div class="spinner"></div>
+                                <p>Loading messages...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="typing-indicator" id="typingIndicator">
+                        Someone is typing...
+                    </div>
+
+                    <div class="chat-input-container">
+                        <textarea id="messageInput" placeholder="Type your message..."></textarea>
+                        <button class="send-button" onclick="sendMessage()" id="sendBtn">
+                            Send 💌
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Conversation Thread -->
-                <div id="conversationThread" class="conversation hidden"></div>
-
-                <!-- Admin Panel (only visible in admin mode) -->
+                <!-- Admin Panel -->
                 <div id="adminPanel" class="admin-panel hidden">
                     <h2>📊 Admin Dashboard</h2>
                     <div class="stat-grid">
@@ -760,7 +893,7 @@
                             <div class="stat-value" id="statFirstView" style="font-size: 1rem;">Never</div>
                         </div>
                         <div class="stat-box">
-                            <div class="stat-label">Messages Sent</div>
+                            <div class="stat-label">Total Messages</div>
                             <div class="stat-value" id="statMessages">0</div>
                         </div>
                     </div>
@@ -768,7 +901,6 @@
                     <div class="admin-actions">
                         <button class="admin-btn" onclick="resetAttempts()">🔄 Reset Attempts</button>
                         <button class="admin-btn" onclick="exportData()">💾 Export Data</button>
-                        <button class="admin-btn" onclick="toggleScreenshotMode()">📸 Screenshot Mode</button>
                         <button class="admin-btn" onclick="clearAllData()">🗑️ Clear All Data</button>
                     </div>
 
@@ -779,7 +911,7 @@
                 </div>
             </div>
 
-            <!-- Thank You Screen (after 3 wrong attempts) -->
+            <!-- Thank You Screen -->
             <div id="thankYouScreen" class="hidden thank-you-screen">
                 <h1>Thank You</h1>
                 <p>🌸</p>
@@ -791,14 +923,46 @@
     <div class="admin-toggle" onclick="toggleAdminMode()" title="Admin Panel"></div>
 
     <script>
-        // CONFIGURATION - Add your photo URL here
-        const PHOTO_URL = "https://lh3.googleusercontent.com/d/18z5SKAEbXX6KfzFhLsqx0jr-p_IrZUda"; // Paste your image URL here (imgur, imgbb, or base64)
-        
-        // If using Google Drive, convert the link like this:
-        // Original: https://drive.google.com/file/d/FILE_ID/view?usp=sharing
-        // Use this: https://drive.google.com/uc?export=view&id=FILE_ID
+        // ==========================================
+        // FIREBASE CONFIGURATION
+        // ==========================================
+        // REPLACE THESE VALUES WITH YOUR FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOvDIM-Z54LNYN_u7fzHw47OVdGO2_Emc",
+            authDomain: "womens-day-message.firebaseapp.com",
+            databaseURL: "https://womens-day-message-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "womens-day-message",
+            storageBucket: "womens-day-message.firebasestorage.app",
+            messagingSenderId: "288548028781",
+            appId: "1:288548028781:web:3b15849fd13b9ad26a1a64",
+            measurementId: "G-CS0Y9FXPEM"
+        };
 
-        // All 5 questions with their answers
+        // PHOTO URL - Add your image link here
+        const PHOTO_URL = "https://lh3.googleusercontent.com/d/18z5SKAEbXX6KfzFhLsqx0jr-p_IrZUda";
+
+        // Initialize Firebase
+        let db;
+        let messagesRef;
+        let analyticsRef;
+        let isFirebaseReady = false;
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.database();
+            messagesRef = db.ref('messages');
+            analyticsRef = db.ref('analytics');
+            isFirebaseReady = true;
+            updateConnectionStatus(true);
+        } catch (error) {
+            console.error('Firebase initialization error:', error);
+            updateConnectionStatus(false);
+            alert('⚠️ Firebase not configured! Please follow setup instructions.');
+        }
+
+        // ==========================================
+        // QUESTIONS & CORE LOGIC
+        // ==========================================
         const questionBank = [
             {
                 question: "Aaplya Gavchya Appanch nav ky ahe?",
@@ -830,9 +994,27 @@
         let selectedQuestions = [];
         let selectedAnswers = {};
         let isAdminMode = false;
-        let screenshotMode = false;
+        let currentUser = 'sister'; // or 'brother' when in admin mode
 
-        // Initialize analytics
+        // ==========================================
+        // CONNECTION STATUS
+        // ==========================================
+        function updateConnectionStatus(connected) {
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            
+            if (connected) {
+                statusDot.classList.remove('disconnected');
+                statusText.textContent = 'Connected';
+            } else {
+                statusDot.classList.add('disconnected');
+                statusText.textContent = 'Offline';
+            }
+        }
+
+        // ==========================================
+        // ANALYTICS
+        // ==========================================
         function initAnalytics() {
             if (!localStorage.getItem('analytics')) {
                 localStorage.setItem('analytics', JSON.stringify({
@@ -841,7 +1023,6 @@
                     messageRead: false,
                     firstView: null,
                     lastVisit: null,
-                    messagesSent: 0,
                     activityLog: []
                 }));
             }
@@ -849,8 +1030,14 @@
             let analytics = JSON.parse(localStorage.getItem('analytics'));
             analytics.visits++;
             analytics.lastVisit = new Date().toISOString();
-            addActivity('Page visited');
             localStorage.setItem('analytics', JSON.stringify(analytics));
+            
+            // Sync to Firebase
+            if (isFirebaseReady) {
+                analyticsRef.set(analytics);
+            }
+            
+            addActivity('Page visited');
         }
 
         function addActivity(activity) {
@@ -861,18 +1048,20 @@
             });
             analytics.activityLog = analytics.activityLog.slice(0, 50);
             localStorage.setItem('analytics', JSON.stringify(analytics));
+            
+            if (isFirebaseReady) {
+                analyticsRef.child('activityLog').set(analytics.activityLog);
+            }
         }
 
         function updateAdminPanel() {
             if (!isAdminMode) return;
             
             let analytics = JSON.parse(localStorage.getItem('analytics'));
-            let conversation = JSON.parse(localStorage.getItem('sisterConversation') || '[]');
             
             document.getElementById('statVisits').textContent = analytics.visits;
             document.getElementById('statAttempts').textContent = analytics.wrongAttempts;
             document.getElementById('statRead').textContent = analytics.messageRead ? 'Yes ✓' : 'No';
-            document.getElementById('statMessages').textContent = conversation.filter(m => m.sender === 'sister').length;
             
             if (analytics.lastVisit) {
                 const date = new Date(analytics.lastVisit);
@@ -884,6 +1073,14 @@
                 const date = new Date(analytics.firstView);
                 document.getElementById('statFirstView').textContent = 
                     date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+            }
+
+            // Count messages from Firebase
+            if (isFirebaseReady) {
+                messagesRef.once('value', (snapshot) => {
+                    const count = snapshot.numChildren();
+                    document.getElementById('statMessages').textContent = count;
+                });
             }
 
             const logContainer = document.getElementById('activityLog');
@@ -905,13 +1102,18 @@
             const adminPanel = document.getElementById('adminPanel');
             
             if (isAdminMode) {
+                currentUser = 'brother';
                 adminPanel.classList.remove('hidden');
                 updateAdminPanel();
             } else {
+                currentUser = 'sister';
                 adminPanel.classList.add('hidden');
             }
         }
 
+        // ==========================================
+        // QUESTIONS LOGIC
+        // ==========================================
         function selectRandomQuestions() {
             const indices = [];
             while (indices.length < 2) {
@@ -957,7 +1159,7 @@
             if (analytics.wrongAttempts >= 3) {
                 document.getElementById('welcomeScreen').classList.add('hidden');
                 document.getElementById('thankYouScreen').classList.remove('hidden');
-                addActivity('Visited after 3 failed attempts - showed Thank You');
+                addActivity('Visited after 3 failed attempts');
                 return;
             }
 
@@ -1016,24 +1218,32 @@
                 }
                 localStorage.setItem('analytics', JSON.stringify(analytics));
                 
+                if (isFirebaseReady) {
+                    analyticsRef.set(analytics);
+                }
+                
                 createConfetti();
                 document.getElementById('questionsScreen').classList.add('hidden');
                 document.getElementById('messageScreen').classList.remove('hidden');
                 loadPhoto();
-                loadConversation();
-                addActivity('✅ Answered correctly - message unlocked');
+                loadMessages();
+                addActivity('✅ Message unlocked');
                 updateAdminPanel();
             } else {
                 let analytics = JSON.parse(localStorage.getItem('analytics'));
                 analytics.wrongAttempts++;
                 localStorage.setItem('analytics', JSON.stringify(analytics));
                 
+                if (isFirebaseReady) {
+                    analyticsRef.child('wrongAttempts').set(analytics.wrongAttempts);
+                }
+                
                 addActivity(`❌ Wrong attempt #${analytics.wrongAttempts}`);
                 
                 if (analytics.wrongAttempts >= 3) {
                     document.getElementById('questionsScreen').classList.add('hidden');
                     document.getElementById('thankYouScreen').classList.remove('hidden');
-                    addActivity('Failed 3 times - showed Thank You page');
+                    addActivity('Failed 3 times');
                 } else {
                     errorDiv.textContent = `❌ चुकीचे उत्तर! / Wrong answer! (Attempt ${analytics.wrongAttempts}/3)`;
                     errorDiv.classList.remove('hidden');
@@ -1049,146 +1259,188 @@
         function loadPhoto() {
             const photoContainer = document.getElementById('photoContainer');
             if (PHOTO_URL && PHOTO_URL.trim() !== '') {
-                photoContainer.innerHTML = `<img src="${PHOTO_URL}" alt="Our Special Memory" onerror="this.parentElement.innerHTML='<div class=\\'photo-placeholder\\'>Photo failed to load<br>Please check the URL</div>'">`;
-            } else {
-                document.getElementById('photoInfo').classList.remove('hidden');
+                photoContainer.innerHTML = `<img src="${PHOTO_URL}" alt="Our Special Memory" onerror="this.parentElement.innerHTML='<div class=\\'photo-placeholder\\'>Photo failed to load</div>'">`;
             }
         }
 
-        function sendReply() {
-            const replyText = document.getElementById('replyInput').value.trim();
-            
-            if (!replyText) {
-                alert('कृपया आधी मेसेज लिहा! / Please write a message first!');
+        // ==========================================
+        // CHAT FUNCTIONALITY (NEW!)
+        // ==========================================
+        function loadMessages() {
+            if (!isFirebaseReady) {
+                document.getElementById('chatLoading').innerHTML = '<p style="color: var(--primary);">⚠️ Chat offline. Please configure Firebase.</p>';
                 return;
             }
 
-            let conversation = JSON.parse(localStorage.getItem('sisterConversation') || '[]');
+            const chatContainer = document.getElementById('chatMessages');
             
-            const newMessage = {
-                sender: 'sister',
-                text: replyText,
-                timestamp: new Date().toISOString()
+            messagesRef.on('value', (snapshot) => {
+                chatContainer.innerHTML = '';
+                
+                const messages = [];
+                snapshot.forEach((child) => {
+                    messages.push({
+                        id: child.key,
+                        ...child.val()
+                    });
+                });
+
+                if (messages.length === 0) {
+                    chatContainer.innerHTML = '<p style="text-align: center; color: var(--dark); opacity: 0.5; padding: 40px;">No messages yet. Start the conversation! 💬</p>';
+                    return;
+                }
+
+                messages.sort((a, b) => a.timestamp - b.timestamp);
+
+                messages.forEach((msg) => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `chat-message ${msg.sender}`;
+                    
+                    const date = new Date(msg.timestamp);
+                    const timeStr = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+                    
+                    messageDiv.innerHTML = `
+                        <div class="message-bubble">
+                            <div class="message-sender-name">${msg.sender === 'brother' ? 'Your Dada' : 'You'}</div>
+                            <div class="message-text-content">${msg.text}</div>
+                            <div class="message-timestamp">${timeStr}</div>
+                        </div>
+                    `;
+                    
+                    chatContainer.appendChild(messageDiv);
+                });
+
+                // Scroll to bottom
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            });
+        }
+
+        function sendMessage() {
+            if (!isFirebaseReady) {
+                alert('⚠️ Chat is offline. Please configure Firebase first.');
+                return;
+            }
+
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            
+            if (!text) {
+                alert('कृपया मेसेज लिहा! / Please write a message!');
+                return;
+            }
+
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Sending...';
+
+            const message = {
+                sender: currentUser,
+                text: text,
+                timestamp: Date.now()
             };
-            
-            conversation.push(newMessage);
-            localStorage.setItem('sisterConversation', JSON.stringify(conversation));
-            
-            let analytics = JSON.parse(localStorage.getItem('analytics'));
-            analytics.messagesSent = conversation.filter(m => m.sender === 'sister').length;
-            localStorage.setItem('analytics', JSON.stringify(analytics));
-            
-            document.getElementById('replyInput').value = '';
-            loadConversation();
-            addActivity('💬 Sister sent a reply');
-            updateAdminPanel();
-            
-            alert('✨ मेसेज पाठवला! / Message sent! Your brother will see this.');
+
+            messagesRef.push(message)
+                .then(() => {
+                    input.value = '';
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = 'Send 💌';
+                    addActivity(`💬 ${currentUser === 'brother' ? 'Brother' : 'Sister'} sent a message`);
+                })
+                .catch((error) => {
+                    console.error('Error sending message:', error);
+                    alert('Failed to send message. Please try again.');
+                    sendBtn.disabled = false;
+                    sendBtn.textContent = 'Send 💌';
+                });
         }
 
-        function loadConversation() {
-            const conversation = JSON.parse(localStorage.getItem('sisterConversation') || '[]');
-            const threadDiv = document.getElementById('conversationThread');
-            
-            if (conversation.length === 0) {
-                threadDiv.classList.add('hidden');
-                return;
+        // Allow Enter key to send message
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('messageInput');
+            if (input) {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
             }
-            
-            threadDiv.classList.remove('hidden');
-            threadDiv.innerHTML = '<h2 class="reply-heading">Our Conversation</h2>';
-            
-            conversation.forEach(msg => {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message-item from-${msg.sender === 'you' ? 'you' : 'sister'}`;
-                
-                const date = new Date(msg.timestamp);
-                const timeStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
-                
-                messageDiv.innerHTML = `
-                    <div class="message-sender">${msg.sender === 'you' ? 'Your Dada' : 'You'}</div>
-                    <div class="message-content">${msg.text}</div>
-                    <div class="message-time">${timeStr}</div>
-                `;
-                
-                threadDiv.appendChild(messageDiv);
-            });
-        }
+        });
 
-        function addBrotherMessage(messageText) {
-            let conversation = JSON.parse(localStorage.getItem('sisterConversation') || '[]');
-            conversation.push({
-                sender: 'you',
-                text: messageText,
-                timestamp: new Date().toISOString()
-            });
-            localStorage.setItem('sisterConversation', JSON.stringify(conversation));
-            addActivity('Brother sent a message');
-            console.log('✅ Brother message added successfully!');
-        }
-
+        // ==========================================
+        // ADMIN FUNCTIONS
+        // ==========================================
         function resetAttempts() {
             if (!confirm('Reset wrong attempts count to 0?')) return;
+            
             let analytics = JSON.parse(localStorage.getItem('analytics'));
             analytics.wrongAttempts = 0;
             localStorage.setItem('analytics', JSON.stringify(analytics));
-            addActivity('🔄 Attempts reset by admin');
+            
+            if (isFirebaseReady) {
+                analyticsRef.child('wrongAttempts').set(0);
+            }
+            
+            addActivity('🔄 Attempts reset');
             updateAdminPanel();
-            alert('✅ Attempts reset successfully!');
+            alert('✅ Attempts reset!');
         }
 
         function exportData() {
             const analytics = JSON.parse(localStorage.getItem('analytics'));
-            const conversation = JSON.parse(localStorage.getItem('sisterConversation') || '[]');
             
-            const data = {
-                analytics: analytics,
-                conversation: conversation,
-                exportedAt: new Date().toISOString()
-            };
-            
+            if (!isFirebaseReady) {
+                const data = { analytics, messages: [] };
+                downloadJSON(data);
+                return;
+            }
+
+            messagesRef.once('value', (snapshot) => {
+                const messages = [];
+                snapshot.forEach((child) => {
+                    messages.push(child.val());
+                });
+                
+                const data = {
+                    analytics: analytics,
+                    messages: messages,
+                    exportedAt: new Date().toISOString()
+                };
+                
+                downloadJSON(data);
+                addActivity('📥 Data exported');
+            });
+        }
+
+        function downloadJSON(data) {
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `message-data-${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `womens-day-data-${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             URL.revokeObjectURL(url);
-            
-            addActivity('📥 Data exported');
-            alert('✅ Data exported successfully!');
-        }
-
-        function toggleScreenshotMode() {
-            screenshotMode = !screenshotMode;
-            const mode = document.getElementById('screenshotMode');
-            const adminToggle = document.querySelector('.admin-toggle');
-            
-            if (screenshotMode) {
-                mode.classList.add('active');
-                adminToggle.style.display = 'none';
-                document.getElementById('adminPanel').classList.add('hidden');
-                alert('📸 Screenshot mode ON - Admin elements hidden');
-            } else {
-                mode.classList.remove('active');
-                adminToggle.style.display = 'flex';
-                alert('Screenshot mode OFF');
-            }
+            alert('✅ Data exported!');
         }
 
         function clearAllData() {
-            if (!confirm('⚠️ This will delete ALL data including messages and analytics. Are you sure?')) return;
-            if (!confirm('This action cannot be undone. Continue?')) return;
+            if (!confirm('⚠️ Delete ALL data? This cannot be undone!')) return;
+            if (!confirm('Are you absolutely sure?')) return;
             
-            localStorage.removeItem('analytics');
-            localStorage.removeItem('sisterConversation');
-            alert('✅ All data cleared! Page will reload.');
+            localStorage.clear();
+            
+            if (isFirebaseReady) {
+                messagesRef.remove();
+                analyticsRef.remove();
+            }
+            
+            alert('✅ All data cleared! Reloading...');
             location.reload();
         }
 
-        window.addBrotherMessage = addBrotherMessage;
-        window.resetAttempts = resetAttempts;
-
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
         window.onload = function() {
             initAnalytics();
         };
