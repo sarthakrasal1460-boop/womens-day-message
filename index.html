@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Message For You From Your Dada</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #d4587f;
+            --secondary: #f4a5a5;
+            --accent: #ffd6e8;
+            --dark: #2d1b2e;
+            --light: #fff5f8;
+            --gold: #d4a574;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe4f1 50%, #ffd6e8 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(212, 88, 127, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 214, 232, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(244, 165, 165, 0.15) 0%, transparent 50%);
+            animation: drift 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(2deg); }
+            66% { transform: translate(-20px, 20px) rotate(-2deg); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            10%, 30% { transform: scale(1.1); }
+            20%, 40% { transform: scale(0.95); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            position: fixed;
+            top: -10px;
+            z-index: 9999;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        .container {
+            max-width: 650px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px 40px;
+            box-shadow: 
+                0 20px 60px rgba(212, 88, 127, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.4),
+                transparent
+            );
+            animation: shimmer 3s infinite;
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--dark);
+            text-align: center;
+            margin-bottom: 30px;
+            opacity: 0.8;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .heart-icon {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: heartbeat 2s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(212, 88, 127, 0.3));
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(212, 88, 127, 0.3);
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 0.5px;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(212, 88, 127, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--gold) 0%, #e6c090 100%);
+            margin-top: 10px;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .question:nth-child(2) { animation-delay: 0.1s; }
+        .question:nth-child(3) { animation-delay: 0.2s; }
+
+        .question-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            background: white;
+            border: 2px solid var(--accent);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            color: var(--dark);
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            background: var(--light);
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .error-message {
+            background: #ffe4e4;
+            color: #c92a2a;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            text-align: center;
+            border-left: 4px solid #c92a2a;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(212, 88, 127, 0.2);
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .message-container {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .photo-frame {
+            width: 100%;
+            max-width: 450px;
+            margin: 30px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            animation: scaleIn 0.8s ease-out 0.3s backwards;
+            position: relative;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .photo-placeholder {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--light) 100%);
+            padding: 100px 40px;
+            text-align: center;
+            color: var(--primary);
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+
+        .photo-upload-info {
+            background: rgba(212, 88, 127, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--dark);
+            text-align: center;
+        }
+
+        .message-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            line-height: 1.9;
+            color: var(--dark);
+            margin: 30px 0;
+            text-align: left;
+            animation: fadeInUp 0.8s ease-out 0.5s backwards;
+        }
+
+        .signature {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-align: right;
+            margin-top: 30px;
+            font-style: italic;
+            animation: fadeInUp 0.8s ease-out 0.7s backwards;
+        }
+
+        .reply-section {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 2px solid var(--accent);
+            animation: fadeInUp 0.8s ease-out 0.9s backwards;
+        }
+
+        .reply-heading {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid var(--accent);
+            border-radius: 15px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 120px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(212, 88, 127, 0.1);
+        }
+
+        .conversation {
+            margin-top: 30px;
+        }
+
+        .message-item {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .message-item.from-you {
+            background: linear-gradient(135deg, rgba(212, 88, 127, 0.1) 0%, rgba(244, 165, 165, 0.1) 100%);
+            border-left: 4px solid var(--primary);
+        }
+
+        .message-item.from-sister {
+            background: linear-gradient(135deg, rgba(212, 165, 116, 0.1) 0%, rgba(255, 235, 200, 0.1) 100%);
+            border-left: 4px solid var(--gold);
+        }
+
+        .message-sender {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .message-item.from-sister .message-sender {
+            color: var(--gold);
+        }
+
+        .message-content {
+            color: var(--dark);
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .message-time {
+            font-size: 0.8rem;
+            color: rgba(0, 0, 0, 0.4);
+            margin-top: 8px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .decorative-dots {
+            text-align: center;
+            margin: 30px 0;
+            animation: fadeInUp 0.8s ease-out 0.6s backwards;
+        }
+
+        .decorative-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            margin: 0 5px;
+            opacity: 0.6;
+        }
+
+        /* Admin Panel Styles */
+        .admin-panel {
+            background: rgba(45, 27, 46, 0.95);
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .admin-panel h2 {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--gold);
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-box:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .activity-log {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .admin-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .admin-btn {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .admin-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .admin-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            opacity: 0.3;
+        }
+
+        .admin-toggle:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .admin-toggle::before {
+            content: '👤';
+            font-size: 1.5rem;
+        }
+
+        .thank-you-screen {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .thank-you-screen h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .thank-you-screen p {
+            font-size: 1.2rem;
+            color: var(--dark);
+            opacity: 0.7;
+        }
+
+        .screenshot-mode {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(45, 27, 46, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .screenshot-mode.active {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 35px 25px;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .message-text {
+                font-size: 1.1rem;
+                line-height: 1.7;
+            }
+
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .photo-frame {
+                max-width: 100%;
+            }
+
+            .admin-toggle {
+                bottom: 15px;
+                right: 15px;
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid rgba(212, 88, 127, 0.2);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="screenshot-mode" id="screenshotMode">📸 Screenshot Mode Active</div>
+    
+    <div class="container">
+        <div class="card">
+            <!-- Welcome Screen -->
+            <div id="welcomeScreen">
+                <div class="heart-icon">💐</div>
+                <h1>Happy Women's Day!</h1>
+                <p class="subtitle">Someone special has a message for you...</p>
+                <button class="btn" onclick="showQuestions()">Click Here</button>
+            </div>
+
+            <!-- Questions Screen -->
+            <div id="questionsScreen" class="hidden">
+                <h1 style="font-size: 2rem;">Before You Continue...</h1>
+                <p class="subtitle">Answer these questions to unlock your message</p>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <p style="text-align: center; font-size: 0.9rem; color: var(--dark); opacity: 0.6; margin-bottom: 20px;" id="attemptCounter"></p>
+
+                <div id="questionsContainer"></div>
+
+                <button class="btn" onclick="validateAnswers()" style="margin-top: 30px;">Submit Answers</button>
+                
+                <div id="errorMessage" class="hidden error-message"></div>
+            </div>
+
+            <!-- Message Screen -->
+            <div id="messageScreen" class="hidden message-container">
+                <div class="heart-icon">❤️</div>
+                <h1 style="font-size: 2.2rem;">A Message Just For You</h1>
+                
+                <div class="photo-frame">
+                    <div id="photoContainer">
+                        <!-- Photo will be loaded here -->
+                        <div class="photo-placeholder">
+                            <p>📸 Your special photo will appear here<br><br>
+                            💝 Add your image URL in the code<br>
+                            or use base64 encoded image</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="photo-upload-info hidden" id="photoInfo">
+                    💡 To add your photo: Edit line 880 in the code and paste your image URL
+                </div>
+
+                <div class="decorative-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <div class="message-text" id="mainMessage">
+                    Dear Swara,
+                    <br><br>
+                    Jr Tuzyakde 5min astil tr ha ekda maza msg vach ani jr samajl nhi tr parat vach.
+                    <br><br>
+                    Ratri me mobile open kela ani mala tuza insta open disla. me tujhe msg vachale nahi pn 2-3 baghitale. BTW i have right to watch/see your personal msgs.
+                    jo mala doubt hota tech tu kel. mala ratripasun zop nahi. mala as Dada fail zalo as vattay. tu ky mhanali hote tu Ganesh shi bolat nahi. tyachi tuzya side tri ubha rahaychi layki ahe ka rao. mala nahi kalun ghyach ki tumch kontya type ch relation ahe. ani tumha locana relation/love vagere ky ast mahiti nhi. mala nahi kalat yaar tuz challay ky. ani tu multiple mullana msgs kartey tyacha ky. he tynla mahitey ka ki tu dusrynna pn msgs karte. ani ha chaitanya cha ky. tula hech jr karayche asel tr college gelyvr kr na. me support karel. pn atta nako he bai. khup avghad hoel tuza, maza ani familich. 
+                    <br><br>
+                    He sagal karayla tu khup lahan ahe bala. you're just little kiddo. tu khup havet rahte tyachyamul sagal zalay he. tujhe swapna mothe ani ky kartey rao tu. tuza attitude jara kami kr. tuza nkki ky problem ahe to sang. jara simple vag. ani ha kokancha mulga kon ani tula ka msg kartoy ani tu ka reply detey. evdhi pn akkal nahi ka Unolkhichya mansabarobar bolaych ki nahi. tu yaar followers disle ki lagli responce dyayla. udya jr millions followers vala aalyvr ky karshil tu?. swata chya mehntivr motha ho yaar. short cut nako baghu. i was neglecting you I thought one day you will understand all. 
+                    <br><br>
+                    Mala aaplya gharat ya goshti 3rd time repeat nahi karaychyay. tumhi yaar last 3 generation hech chalavlay gharat. thoda gharatle shwas jr ghet nahi tr kahitri kutane hotat. aata gharachnche limit samplay. tyanch vay zalay tyanna samajlyavr nahi sahan honar. 2-4 loka martil gharat tuzya ashya vedya vagnyamul. aadhich aaplya gharat mentally and finacially condition khup vait ahet aata. ani tuzya asha vagnyamul Mau vr effect padtoy. ti khup lahan ahe. mg tini pn hech karava ke repeat je tu kartey. 
+                    <br><br>
+                    ha mazyasathi khup motha heartbreack ahe. mhanaje tumhi gharatil mulinni as tharavlaych ka gharachya lokkana jaguch dyayach nahi. ani mala tumchya doghinchya(Didi ani Tu) choice chi kiv yete. me aslya porranna ani porrnina gharatun latha marun baher kadhel jr asch jr chalu rahil.
+                    <br><br>
+                    Tu jya porrna msgs karte tynachi lyki pn nahi. me tynann ky mhanu shakat nahi karan aaplch manus nit nahi. tula tuza friend circle sodava lagel. tula idea nahit je lokanshi boltey te kon ahe. they will squize you until they will not finish with their purpose. tuzya female friends pn ky kami nahit. te tula cheer karat ahet asl karayla. tu yar hushar ahe dashing ahe. aslya ghoshti nako karu.
+                    <br><br>
+                    tula aatchya aata sagale insta/snap whatever account che password change karayche ahet immediately. ani sagale account delete karaychet immediately. main accounts, dummy account, spoof account he sagal tula dummy account delete karaychet. tuzyasathi last warning ahe tula karaychay te kr. tuje je kon school/ scoiety bhau bahin astil tyanchya pasun lamb raha. bhau ha blood wala ch asto. bakiche loka tula chukich guidance detat. samaj yar tu. ani ya lokanshi bhetaych pn nay kalal ka. tu samjshil yala ky mahiti me konashi bhettey/ konashi boltey pn jevha samjel tevha yad rakh. 
+                    <br><br>
+                    i'm sorry me tula guide karayla navto. ky chukeche ky barobar he tula ajibat mahiti nahi. you're ruining your life aswell family's reputation. tujhi language aadhi sudhar kashi bolte yaar tu. jri friend asla, motha asla barik asla thoda nit bolava. ata gharchynna phasvayche dhandhe band kara. bas zal. gharache pn kantale ahet yar tuzya asha vagnyamul. amhi tuzyasathi kypn karayla tayar aahot. tu phact nit raha. 
+                    <br><br>
+                    mala ya tuzya mistakes sathi kahi explanation nako ahe. me last time choice nahi chance detoy. tula jr he jamat nasel tr directly sang mala.
+                </div>
+
+                <div class="signature">- Tuza Dada 💕</div>
+
+                <!-- Reply Section -->
+                <div class="reply-section">
+                    <h2 class="reply-heading">Tula ky vattay te kalav mala?</h2>
+                    <textarea id="replyInput" placeholder="Write your message here..."></textarea>
+                    <button class="btn" onclick="sendReply()" style="margin-top: 15px;">Send Message</button>
+                </div>
+
+                <!-- Conversation Thread -->
+                <div id="conversationThread" class="conversation hidden"></div>
+
+                <!-- Admin Panel (only visible in admin mode) -->
+                <div id="adminPanel" class="admin-panel hidden">
+                    <h2>📊 Admin Dashboard</h2>
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <div class="stat-label">Total Visits</div>
+                            <div class="stat-value" id="statVisits">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Wrong Attempts</div>
+                            <div class="stat-value" id="statAttempts">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Message Read</div>
+                            <div class="stat-value" id="statRead">No</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Last Visit</div>
+                            <div class="stat-value" id="statLastVisit" style="font-size: 1rem;">Never</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">First View</div>
+                            <div class="stat-value" id="statFirstView" style="font-size: 1rem;">Never</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Messages Sent</div>
+                            <div class="stat-value" id="statMessages">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-actions">
+                        <button class="admin-btn" onclick="resetAttempts()">🔄 Reset Attempts</button>
+                        <button class="admin-btn" onclick="exportData()">💾 Export Data</button>
+                        <button class="admin-btn" onclick="toggleScreenshotMode()">📸 Screenshot Mode</button>
+                        <button class="admin-btn" onclick="clearAllData()">🗑️ Clear All Data</button>
+                    </div>
+
+                    <h3 style="margin-top: 20px; margin-bottom: 10px;">Activity Log</h3>
+                    <div class="activity-log" id="activityLog">
+                        <div class="activity-item">No activity yet</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thank You Screen (after 3 wrong attempts) -->
+            <div id="thankYouScreen" class="hidden thank-you-screen">
+                <h1>Thank You</h1>
+                <p>🌸</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Toggle Button -->
+    <div class="admin-toggle" onclick="toggleAdminMode()" title="Admin Panel"></div>
+
+    <script>
+        // CONFIGURATION - Add your photo URL here
+        const PHOTO_URL = "https://lh3.googleusercontent.com/d/18z5SKAEbXX6KfzFhLsqx0jr-p_IrZUda"; // Paste your image URL here (imgur, imgbb, or base64)
+        
+        // If using Google Drive, convert the link like this:
+        // Original: https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+        // Use this: https://drive.google.com/uc?export=view&id=FILE_ID
+
+        // All 5 questions with their answers
+        const questionBank = [
+            {
+                question: "Aaplya Gavchya Appanch nav ky ahe?",
+                options: ["Maruti", "Vitthal", "Ramchandra", "Keshav"],
+                correctIndex: 1
+            },
+            {
+                question: "Aapu ch khar nav ky ahe?",
+                options: ["Sujal", "Shubham", "Aakshy", "Akash"],
+                correctIndex: 3
+            },
+            {
+                question: "Aaplya aajich nav ky ahe?",
+                options: ["Rekhabai", "Chaya", "Chabubai", "Maya"],
+                correctIndex: 2
+            },
+            {
+                question: "Aaplya gavakadchya pet ch nav kay ahe?",
+                options: ["Roby", "Balu", "Pilu", "Rodger"],
+                correctIndex: 2
+            },
+            {
+                question: "Tuzya mamach surname ky ahe?",
+                options: ["Wable", "Nimbalkar", "Kadam", "Saste"],
+                correctIndex: 1
+            }
+        ];
+
+        let selectedQuestions = [];
+        let selectedAnswers = {};
+        let isAdminMode = false;
+        let screenshotMode = false;
+
+        // Initialize analytics
+        function initAnalytics() {
+            if (!localStorage.getItem('analytics')) {
+                localStorage.setItem('analytics', JSON.stringify({
+                    visits: 0,
+                    wrongAttempts: 0,
+                    messageRead: false,
+                    firstView: null,
+                    lastVisit: null,
+                    messagesSent: 0,
+                    activityLog: []
+                }));
+            }
+            
+            let analytics = JSON.parse(localStorage.getItem('analytics'));
+            analytics.visits++;
+            analytics.lastVisit = new Date().toISOString();
+            addActivity('Page visited');
+            localStorage.setItem('analytics', JSON.stringify(analytics));
+        }
+
+        function addActivity(activity) {
+            let analytics = JSON.parse(localStorage.getItem('analytics'));
+            analytics.activityLog.unshift({
+                action: activity,
+                timestamp: new Date().toISOString()
+            });
+            analytics.activityLog = analytics.activityLog.slice(0, 50);
+            localStorage.setItem('analytics', JSON.stringify(analytics));
+        }
+
+        function updateAdminPanel() {
+            if (!isAdminMode) return;
+            
+            let analytics = JSON.parse(localStorage.getItem('analytics'));
+            let conversation = JSON.parse(localStorage.getItem('sisterConversation') || '[]');
+            
+            document.getElementById('statVisits').textContent = analytics.visits;
+            document.getElementById('statAttempts').textContent = analytics.wrongAttempts;
+            document.getElementById('statRead').textContent = analytics.messageRead ? 'Yes ✓' : 'No';
+            document.getElementById('statMessages').textContent = conversation.filter(m => m.sender === 'sister').length;
+            
+            if (analytics.lastVisit) {
+                const date = new Date(analytics.lastVisit);
+                document.getElementById('statLastVisit').textContent = 
+                    date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+            }
+
+            if (analytics.firstView) {
+                const date = new Date(analytics.firstView);
+                document.getElementById('statFirstView').textContent = 
+                    date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+            }
+
+            const logContainer = document.getElementById('activityLog');
+            if (analytics.activityLog.length === 0) {
+                logContainer.innerHTML = '<div class="activity-item">No activity yet</div>';
+            } else {
+                logContainer.innerHTML = analytics.activityLog.map(item => {
+                    const date = new Date(item.timestamp);
+                    return `<div class="activity-item">
+                        <strong>${item.action}</strong><br>
+                        <small>${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</small>
+                    </div>`;
+                }).join('');
+            }
+        }
+
+        function toggleAdminMode() {
+            isAdminMode = !isAdminMode;
+            const adminPanel = document.getElementById('adminPanel');
+            
+            if (isAdminMode) {
+                adminPanel.classList.remove('hidden');
+                updateAdminPanel();
+            } else {
+                adminPanel.classList.add('hidden');
+            }
+        }
+
+        function selectRandomQuestions() {
+            const indices = [];
+            while (indices.length < 2) {
+                const randomIndex = Math.floor(Math.random() * questionBank.length);
+                if (!indices.includes(randomIndex)) {
+                    indices.push(randomIndex);
+                }
+            }
+            
+            selectedQuestions = indices.map(i => ({
+                ...questionBank[i],
+                id: 'q' + i
+            }));
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = selectedQuestions.map((q, index) => `
+                <div class="question">
+                    <div class="question-text">${q.question}</div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" onclick="selectOption(this, '${q.id}', ${optIndex})">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateProgressBar() {
+            let analytics = JSON.parse(localStorage.getItem('analytics'));
+            const attempts = analytics.wrongAttempts;
+            const percentage = (attempts / 3) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('attemptCounter').textContent = 
+                attempts > 0 ? `Wrong attempts: ${attempts}/3` : 'First attempt - Good luck! 🍀';
+        }
+
+        function showQuestions() {
+            let analytics = JSON.parse(localStorage.getItem('analytics'));
+            if (analytics.wrongAttempts >= 3) {
+                document.getElementById('welcomeScreen').classList.add('hidden');
+                document.getElementById('thankYouScreen').classList.remove('hidden');
+                addActivity('Visited after 3 failed attempts - showed Thank You');
+                return;
+            }
+
+            selectRandomQuestions();
+            renderQuestions();
+            updateProgressBar();
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('questionsScreen').classList.remove('hidden');
+            addActivity('Started questions');
+        }
+
+        function selectOption(element, questionId, answerIndex) {
+            const options = element.parentElement.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedAnswers[questionId] = answerIndex;
+        }
+
+        function createConfetti() {
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = ['#d4587f', '#f4a5a5', '#ffd6e8', '#d4a574'][Math.floor(Math.random() * 4)];
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    confetti.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 50);
+            }
+        }
+
+        function validateAnswers() {
+            const errorDiv = document.getElementById('errorMessage');
+            
+            if (Object.keys(selectedAnswers).length < 2) {
+                errorDiv.textContent = 'कृपया दोन्ही प्रश्नांची उत्तरे द्या! / Please answer both questions!';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            let allCorrect = true;
+            selectedQuestions.forEach(q => {
+                if (selectedAnswers[q.id] !== q.correctIndex) {
+                    allCorrect = false;
+                }
+            });
+
+            if (allCorrect) {
+                let analytics = JSON.parse(localStorage.getItem('analytics'));
+                analytics.messageRead = true;
+                if (!analytics.firstView) {
+                    analytics.firstView = new Date().toISOString();
+                }
+                localStorage.setItem('analytics', JSON.stringify(analytics));
+                
+                createConfetti();
+                document.getElementById('questionsScreen').classList.add('hidden');
+                document.getElementById('messageScreen').classList.remove('hidden');
+                loadPhoto();
+                loadConversation();
+                addActivity('✅ Answered correctly - message unlocked');
+                updateAdminPanel();
+            } else {
+                let analytics = JSON.parse(localStorage.getItem('analytics'));
+                analytics.wrongAttempts++;
+                localStorage.setItem('analytics', JSON.stringify(analytics));
+                
+                addActivity(`❌ Wrong attempt #${analytics.wrongAttempts}`);
+                
+                if (analytics.wrongAttempts >= 3) {
+                    document.getElementById('questionsScreen').classList.add('hidden');
+                    document.getElementById('thankYouScreen').classList.remove('hidden');
+                    addActivity('Failed 3 times - showed Thank You page');
+                } else {
+                    errorDiv.textContent = `❌ चुकीचे उत्तर! / Wrong answer! (Attempt ${analytics.wrongAttempts}/3)`;
+                    errorDiv.classList.remove('hidden');
+                    updateProgressBar();
+                }
+                
+                updateAdminPanel();
+            }
+
+            selectedAnswers = {};
+        }
+
+        function loadPhoto() {
+            const photoContainer = document.getElementById('photoContainer');
+            if (PHOTO_URL && PHOTO_URL.trim() !== '') {
+                photoContainer.innerHTML = `<img src="${PHOTO_URL}" alt="Our Special Memory" onerror="this.parentElement.innerHTML='<div class=\\'photo-placeholder\\'>Photo failed to load<br>Please check the URL</div>'">`;
+            } else {
+                document.getElementById('photoInfo').classList.remove('hidden');
+            }
+        }
+
+        function sendReply() {
+            const replyText = document.getElementById('replyInput').value.trim();
+            
+            if (!replyText) {
+                alert('कृपया आधी मेसेज लिहा! / Please write a message first!');
+                return;
+            }
+
+            let conversation = JSON.parse(localStorage.getItem('sisterConversation') || '[]');
+            
+            const newMessage = {
+                sender: 'sister',
+                text: replyText,
+                timestamp: new Date().toISOString()
+            };
+            
+            conversation.push(newMessage);
+            localStorage.setItem('sisterConversation', JSON.stringify(conversation));
+            
+            let analytics = JSON.parse(localStorage.getItem('analytics'));
+            analytics.messagesSent = conversation.filter(m => m.sender === 'sister').length;
+            localStorage.setItem('analytics', JSON.stringify(analytics));
+            
+            document.getElementById('replyInput').value = '';
+            loadConversation();
+            addActivity('💬 Sister sent a reply');
+            updateAdminPanel();
+            
+            alert('✨ मेसेज पाठवला! / Message sent! Your brother will see this.');
+        }
+
+        function loadConversation() {
+            const conversation = JSON.parse(localStorage.getItem('sisterConversation') || '[]');
+            const threadDiv = document.getElementById('conversationThread');
+            
+            if (conversation.length === 0) {
+                threadDiv.classList.add('hidden');
+                return;
+            }
+            
+            threadDiv.classList.remove('hidden');
+            threadDiv.innerHTML = '<h2 class="reply-heading">Our Conversation</h2>';
+            
+            conversation.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message-item from-${msg.sender === 'you' ? 'you' : 'sister'}`;
+                
+                const date = new Date(msg.timestamp);
+                const timeStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+                
+                messageDiv.innerHTML = `
+                    <div class="message-sender">${msg.sender === 'you' ? 'Your Dada' : 'You'}</div>
+                    <div class="message-content">${msg.text}</div>
+                    <div class="message-time">${timeStr}</div>
+                `;
+                
+                threadDiv.appendChild(messageDiv);
+            });
+        }
+
+        function addBrotherMessage(messageText) {
+            let conversation = JSON.parse(localStorage.getItem('sisterConversation') || '[]');
+            conversation.push({
+                sender: 'you',
+                text: messageText,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('sisterConversation', JSON.stringify(conversation));
+            addActivity('Brother sent a message');
+            console.log('✅ Brother message added successfully!');
+        }
+
+        function resetAttempts() {
+            if (!confirm('Reset wrong attempts count to 0?')) return;
+            let analytics = JSON.parse(localStorage.getItem('analytics'));
+            analytics.wrongAttempts = 0;
+            localStorage.setItem('analytics', JSON.stringify(analytics));
+            addActivity('🔄 Attempts reset by admin');
+            updateAdminPanel();
+            alert('✅ Attempts reset successfully!');
+        }
+
+        function exportData() {
+            const analytics = JSON.parse(localStorage.getItem('analytics'));
+            const conversation = JSON.parse(localStorage.getItem('sisterConversation') || '[]');
+            
+            const data = {
+                analytics: analytics,
+                conversation: conversation,
+                exportedAt: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `message-data-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            addActivity('📥 Data exported');
+            alert('✅ Data exported successfully!');
+        }
+
+        function toggleScreenshotMode() {
+            screenshotMode = !screenshotMode;
+            const mode = document.getElementById('screenshotMode');
+            const adminToggle = document.querySelector('.admin-toggle');
+            
+            if (screenshotMode) {
+                mode.classList.add('active');
+                adminToggle.style.display = 'none';
+                document.getElementById('adminPanel').classList.add('hidden');
+                alert('📸 Screenshot mode ON - Admin elements hidden');
+            } else {
+                mode.classList.remove('active');
+                adminToggle.style.display = 'flex';
+                alert('Screenshot mode OFF');
+            }
+        }
+
+        function clearAllData() {
+            if (!confirm('⚠️ This will delete ALL data including messages and analytics. Are you sure?')) return;
+            if (!confirm('This action cannot be undone. Continue?')) return;
+            
+            localStorage.removeItem('analytics');
+            localStorage.removeItem('sisterConversation');
+            alert('✅ All data cleared! Page will reload.');
+            location.reload();
+        }
+
+        window.addBrotherMessage = addBrotherMessage;
+        window.resetAttempts = resetAttempts;
+
+        window.onload = function() {
+            initAnalytics();
+        };
+    </script>
+</body>
+</html>
